@@ -51,9 +51,10 @@ bool RTIMUMPU9250::setSampleRate(int rate)
     if ((rate < 8000) && (rate >= 1000))
         rate = 1000;
 
-    if (rate < 1000) {
-        int sampleDiv = (1000 / rate) - 1;
-        m_sampleRate = 1000 / (1 + sampleDiv);
+    const int internal_sampling_rate = 1000;
+    if (rate < internal_sampling_rate) {
+        int sampleDiv = (internal_sampling_rate / rate) - 1;
+        m_sampleRate = internal_sampling_rate / (1 + sampleDiv);
     } else {
         m_sampleRate = rate;
     }
@@ -499,10 +500,11 @@ bool RTIMUMPU9250::bypassOff()
 
 int RTIMUMPU9250::IMUGetPollInterval()
 {
-    if (m_sampleRate > 400)
+    const int internal_sampling_rate = 1000;
+    if (m_sampleRate > internal_sampling_rate)
         return 1;
     else
-        return (400 / m_sampleRate);
+        return (internal_sampling_rate / m_sampleRate);
 }
 
 bool RTIMUMPU9250::IMURead()
